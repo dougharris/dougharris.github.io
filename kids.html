@@ -4,7 +4,7 @@
         <title>Kids Today</title>
         <style>
          body {
-             font-family: Helvetica, Arial;
+             font-family: "Gill Sans", Helvetica, Arial;
          }
          #current span {
              display: block;
@@ -22,10 +22,19 @@
          td.center {
              text-align: center;
          }
+         #time {
+             font-size: smaller;
+             text-align: right;
+             color: #666;
+             padding-bottom: 3px;
+         }
         </style>
     </head>
 
     <body>
+        <div id="time">
+        </div>
+
         <div id="current">
         </div>
 
@@ -179,7 +188,7 @@
              console.log(`It's now ${current_time}`);
 
              if (current_time < school_begins || current_time > school_ends) {
-                 write_current_status("School is out");
+                 write_current_status("<span>School is out</span>");
                  return;
              }
 
@@ -193,7 +202,7 @@
              }
 
              if (dayType == "weekend") {
-                 write_current_status("It's the weekend, they're not in class");
+                 write_current_status("<span>It's the weekend, they're not in class</span>");
                  return;
              }
 
@@ -215,8 +224,21 @@
              }
          };
 
+         var show_current_time = function() {
+             var options = {
+                 weekday: 'short',
+                 month: 'short',
+                 day: 'numeric',
+                 hour: 'numeric',
+                 minute: 'numeric'
+             };
+             var now = new Date();
+             document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
+         };
+
          where_are_they_now();
          draw_schedule_table();
+         show_current_time();
         </script>
 
     </body>
