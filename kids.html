@@ -28,6 +28,9 @@
              color: #666;
              padding-bottom: 3px;
          }
+         .current_day_type {
+             background: #ffcccc;
+         }
         </style>
     </head>
 
@@ -131,6 +134,30 @@
              var oddCell, evenCell;
              var tbody = document.getElementById('schedule_body');
 
+             var now = getDate();
+             var dayType;
+             switch (now.getDay()) {
+                 case 0:
+                 case 6:
+                     // weekend
+                     dayType = 'weekend';
+                     break;
+                 case 1:
+                     // Monday
+                     dayType = 'full';
+                     break;
+                 case 2:
+                 case 4:
+                     // Tuesday or Thursday
+                     dayType = 'odd';
+                     break;
+                 case 3:
+                 case 5:
+                     // Wednesday or Friday
+                     dayType = 'even';
+                     break;
+             }
+
              for (i in schedule) {
                  var item = schedule[i];
 
@@ -150,16 +177,31 @@
                  cell.appendChild(text);
 
                  cell = newRow.insertCell(3);
+                 if (dayType == "full")
+                     cell.className = "current_day_type";
                  text = document.createTextNode(`${item.short_start} - ${item.short_end}`);
                  cell.appendChild(text);
 
                  oddCell = newRow.insertCell(4);
                  evenCell = newRow.insertCell(5);
                  text = document.createTextNode(`${item.long_start} - ${item.long_end}`);
-                 if (item.period % 2 == 1) {
+                 if (item.period == undefined) {
+                     // STEP
                      oddCell.appendChild(text);
+                     var text2 = text.cloneNode()
+                     evenCell.appendChild(text2);
+                     if (dayType == "odd")
+                         oddCell.className = "current_day_type";
+                     if (dayType == "even")
+                         evenCell.className = "current_day_type";
+                 } else if (item.period % 2 == 1) {
+                     oddCell.appendChild(text);
+                     if (dayType == "odd")
+                         oddCell.className = "current_day_type";
                  } else {
                      evenCell.appendChild(text);
+                     if (dayType == "even")
+                         evenCell.className = "current_day_type";
                  }
              }
          };
@@ -217,11 +259,12 @@
                      (period % 2) == (now.getDay() % 2)) {
                      // get the right even/odd days
                      continue;
-                 }
+            }
                  if (current_time >= schedule[i][start_key] &&
                      current_time <= schedule[i][end_key]) {
                      output = `<span id="marn">Marney is in ${schedule[i]['marn']}</span>` +
-                              `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>`;
+                              `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>` +
+                              `<span>until ${schedule[i][end_key]}</span>`;
                      writeCurrentStatus(output);
                  }
              }
