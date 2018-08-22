@@ -124,7 +124,7 @@
          var school_begins = "08:55";
          var school_ends = "15:25";
 
-         var draw_schedule_table = function() {
+         var drawScheduleTable = function() {
              var cell, text;
              var oddCell, evenCell;
              var tbody = document.getElementById('schedule_body');
@@ -162,33 +162,34 @@
              }
          };
 
-         var write_current_status = function(output) {
+         var writeCurrentStatus = function(output) {
              document.getElementById("current").innerHTML = output;
          }
 
 
-         var get_date = function() {
-             // ?date=2018-08-21T13:09:00
-             var params = (new URL(document.location)).searchParams;
-             var dateParam = params.get("date");
-             var d;
-             if (dateParam !== null) {
-                 d = new Date(dateParam);
-             } else {
-                 d = new Date();
+         var getDate = function() {
+             var d = new Date();
+             try {
+                 // ?date=2018-08-21T13:09:00
+                 var params = (new URL(document.location)).searchParams;
+                 var dateParam = params.get("date");
+                 if (dateParam !== null) {
+                     d = new Date(dateParam);
+                 }
+             } catch (error) {
+                 console.log("can't read params <iOS 11");
              }
              return d;
          };
 
-         var where_are_they_now = function() {
-             now = get_date();
+         var whereAreTheyNow = function() {
+             now = getDate();
              var h = `${now.getHours()}`.padStart(2,'0');
              var m = `${now.getMinutes()}`.padStart(2,'0');
              var current_time = `${h}:${m}`;
-             console.log(`It's now ${current_time}`);
 
              if (current_time < school_begins || current_time > school_ends) {
-                 write_current_status("<span>School is out</span>");
+                 writeCurrentStatus("<span>School is out</span>");
                  return;
              }
 
@@ -202,7 +203,7 @@
              }
 
              if (dayType == "weekend") {
-                 write_current_status("<span>It's the weekend, they're not in class</span>");
+                 writeCurrentStatus("<span>It's the weekend, they're not in class</span>");
                  return;
              }
 
@@ -219,12 +220,12 @@
                      current_time <= schedule[i][end_key]) {
                      output = `<span id="marn">Marney is in ${schedule[i]['marn']}</span>` +
                               `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>`;
-                     write_current_status(output);
+                     writeCurrentStatus(output);
                  }
              }
          };
 
-         var show_current_time = function() {
+         var showCurrentTime = function() {
              var options = {
                  weekday: 'short',
                  month: 'short',
@@ -232,13 +233,13 @@
                  hour: 'numeric',
                  minute: 'numeric'
              };
-             var now = new Date();
+             var now = getDate()
              document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
          };
 
-         where_are_they_now();
-         draw_schedule_table();
-         show_current_time();
+         whereAreTheyNow();
+         drawScheduleTable();
+         showCurrentTime();
         </script>
 
     </body>
