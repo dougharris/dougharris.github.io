@@ -1,0 +1,223 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kids Today</title>
+        <style>
+         body {
+             font-family: Helvetica, Arial;
+         }
+         #current span {
+             display: block;
+             text-align: center;
+             padding-bottom: 5px;
+         }
+         table {
+             border-collapse: collapse;
+             border: 3px solid purple;
+         }
+         th, td {
+             border: 1px solid purple;
+             padding: 5px 8px;
+         }
+         td.center {
+             text-align: center;
+         }
+        </style>
+    </head>
+
+    <body>
+        <div id="current">
+        </div>
+
+        <div id="schedule">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Marney</th>
+                        <th>Kevin</th>
+                        <th class="all_col">All</th>
+                        <th class="odd_col">Odd</th>
+                        <th class="even_col">Even</th>
+                    </tr>
+                </thead>
+
+                <tbody id="schedule_body">
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+         var schedule = [
+             { "period": 1,
+               "marn": "Drawing & Painting",
+               "kev": "Health",
+               "short_start":"08:55",
+               "short_end":"09:34",
+               "long_start":"08:55",
+               "long_end":"10:15"},
+             { "period": 2,
+               "marn": "Choir",
+               "kev": "Engineering",
+               "short_start":"09:39",
+               "short_end":"10:18",
+               "long_start":"08:55",
+               "long_end":"10:15"},
+             { "period": 3,
+               "marn": "Comp Sci",
+               "kev": "Choir",
+               "short_start":"10:23",
+               "short_end":"11:02",
+               "long_start":"10:20",
+               "long_end":"11:45"},
+             { "period": 4,
+               "marn": "Env Sci",
+               "kev": "English",
+               "short_start":"11:07",
+               "short_end":"11:46",
+               "long_start":"10:20",
+               "long_end":"11:45"},
+             { "marn": "STEP",
+               "kev": "STEP",
+               "short_start":"11:46",
+               "short_end":"12:26",
+               "long_start":"11:45",
+               "long_end":"12:30"},
+             { "period": 5,
+               "marn": "English",
+               "kev": "Precalc",
+               "short_start":"12:34",
+               "short_end":"13:13",
+               "long_start":"12:38",
+               "long_end":"14:00"},
+             { "period": 6,
+               "marn": "US Gov",
+               "kev": "Chinese",
+               "short_start":"13:18",
+               "short_end":"13:57",
+               "long_start":"12:38",
+               "long_end":"14:00"},
+             { "period": 7,
+               "marn": "free",
+               "kev": "Biology",
+               "short_start":"14:02",
+               "short_end":"14:41",
+               "long_start":"14:05",
+               "long_end":"15:25"},
+             { "period": 8,
+               "marn": "DC Gov",
+               "kev": "History",
+               "short_start":"14:46",
+               "short_end":"15:25",
+               "long_start":"14:05",
+               "long_end":"15:25"}
+         ];
+         var school_begins = "08:55";
+         var school_ends = "15:25";
+
+         var draw_schedule_table = function() {
+             var cell, text;
+             var oddCell, evenCell;
+             var tbody = document.getElementById('schedule_body');
+
+             for (i in schedule) {
+                 var item = schedule[i];
+
+                 var newRow = tbody.insertRow(tbody.rows.length);
+
+                 cell = newRow.insertCell(0);
+                 cell.className = "center";
+                 text = document.createTextNode(item.period==undefined?"":item.period);
+                 cell.appendChild(text);
+
+                 cell = newRow.insertCell(1);
+                 text = document.createTextNode(item.marn);
+                 cell.appendChild(text);
+
+                 cell = newRow.insertCell(2);
+                 text = document.createTextNode(item.kev);
+                 cell.appendChild(text);
+
+                 cell = newRow.insertCell(3);
+                 text = document.createTextNode(`${item.short_start} - ${item.short_end}`);
+                 cell.appendChild(text);
+
+                 oddCell = newRow.insertCell(4);
+                 evenCell = newRow.insertCell(5);
+                 text = document.createTextNode(`${item.long_start} - ${item.long_end}`);
+                 if (item.period % 2 == 1) {
+                     oddCell.appendChild(text);
+                 } else {
+                     evenCell.appendChild(text);
+                 }
+             }
+         };
+
+         var write_current_status = function(output) {
+             document.getElementById("current").innerHTML = output;
+         }
+
+
+         var get_date = function() {
+             // ?date=2018-08-21T13:09:00
+             var params = (new URL(document.location)).searchParams;
+             var dateParam = params.get("date");
+             var d;
+             if (dateParam !== null) {
+                 d = new Date(dateParam);
+             } else {
+                 d = new Date();
+             }
+             return d;
+         };
+
+         var where_are_they_now = function() {
+             now = get_date();
+             var h = `${now.getHours()}`.padStart(2,'0');
+             var m = `${now.getMinutes()}`.padStart(2,'0');
+             var current_time = `${h}:${m}`;
+             console.log(`It's now ${current_time}`);
+
+             if (current_time < school_begins || current_time > school_ends) {
+                 write_current_status("School is out");
+                 return;
+             }
+
+             var dayType;
+             if (now.getDay() == 1) {
+                 dayType = "short";
+             } else if ([2,3,4,5].includes(now.getDay())) {
+                 dayType = "long";
+             } else {
+                 dayType = "weekend";
+             }
+
+             if (dayType == "weekend") {
+                 write_current_status("It's the weekend, they're not in class");
+                 return;
+             }
+
+             var start_key = `${dayType}_start`;
+             var end_key = `${dayType}_end`;
+             for (var i in schedule) {
+                 var period = schedule[i].period;
+                 if (dayType == 'long' &&
+                     (period % 2) == (now.getDay() % 2)) {
+                     // get the right even/odd days
+                     continue;
+                 }
+                 if (current_time >= schedule[i][start_key] &&
+                     current_time <= schedule[i][end_key]) {
+                     output = `<span id="marn">Marney is in ${schedule[i]['marn']}</span>` +
+                              `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>`;
+                     write_current_status(output);
+                 }
+             }
+         };
+
+         where_are_they_now();
+         draw_schedule_table();
+        </script>
+
+    </body>
+</html>
