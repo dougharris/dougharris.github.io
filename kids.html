@@ -31,6 +31,11 @@
          .current_day_type {
              background: #ffcccc;
          }
+         .free {
+             font-style: italic;
+             text-align: center;
+             color: #aaa;
+         }
         </style>
     </head>
 
@@ -62,7 +67,7 @@
         <script>
          var schedule = [
              { "period": 1,
-               "marn": "Drawing & Painting",
+               "marn": "free",
                "kev": "Health",
                "short_start":"08:55",
                "short_end":"09:34",
@@ -117,7 +122,7 @@
                "long_start":"14:05",
                "long_end":"15:25"},
              { "period": 8,
-               "marn": "DC Gov",
+               "marn": "AP Art",
                "kev": "History",
                "short_start":"14:46",
                "short_end":"15:25",
@@ -170,6 +175,9 @@
 
                  cell = newRow.insertCell(1);
                  text = document.createTextNode(item.marn);
+                 if (item.marn == "free") {
+                     cell.className = "free";
+                 }
                  cell.appendChild(text);
 
                  cell = newRow.insertCell(2);
