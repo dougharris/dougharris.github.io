@@ -124,6 +124,8 @@
          var school_begins = "08:55";
          var school_ends = "15:25";
 
+         var pad = function(num, len) { return ("00000000" + num).substr(-len) };
+
          var drawScheduleTable = function() {
              var cell, text;
              var oddCell, evenCell;
@@ -184,8 +186,8 @@
 
          var whereAreTheyNow = function() {
              now = getDate();
-             var h = `${now.getHours()}`.padStart(2,'0');
-             var m = `${now.getMinutes()}`.padStart(2,'0');
+             var h = pad(now.getHours(), 2);
+             var m = pad(now.getMinutes(), 2);
              var current_time = `${h}:${m}`;
 
              if (current_time < school_begins || current_time > school_ends) {
