@@ -133,6 +133,15 @@
          var school_ends = "15:25";
 
          var pad = function(num, len) { return ("00000000" + num).substr(-len) };
+         var convertTo12Hour = function(timeString) {
+             var parts = timeString.split(":");
+             var hour = parseInt(parts[0]);
+
+             if (hour > 12) {
+                 hour = hour - 12;
+             }
+             return `${hour}:${parts[1]}`;
+         }
 
          var drawScheduleTable = function() {
              var cell, text;
@@ -187,12 +196,14 @@
                  cell = newRow.insertCell(3);
                  if (dayType == "full")
                      cell.className = "current_day_type";
-                 text = document.createTextNode(`${item.short_start} - ${item.short_end}`);
+                 text = document.createTextNode(`${convertTo12Hour(item.short_start)} - ` +
+                                                `${convertTo12Hour(item.short_end)}`);
                  cell.appendChild(text);
 
                  oddCell = newRow.insertCell(4);
                  evenCell = newRow.insertCell(5);
-                 text = document.createTextNode(`${item.long_start} - ${item.long_end}`);
+                 text = document.createTextNode(`${convertTo12Hour(item.long_start)} - ` +
+                                                `${convertTo12Hour(item.long_end)}`);
                  if (item.period == undefined) {
                      // STEP
                      oddCell.appendChild(text);
@@ -267,12 +278,12 @@
                      (period % 2) == (now.getDay() % 2)) {
                      // get the right even/odd days
                      continue;
-            }
+                 }
                  if (current_time >= schedule[i][start_key] &&
                      current_time <= schedule[i][end_key]) {
                      output = `<span id="marn">Marney is in ${schedule[i]['marn']}</span>` +
                               `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>` +
-                              `<span>until ${schedule[i][end_key]}</span>`;
+                              `<span>until ${convertTo12Hour(schedule[i][end_key])}</span>`;
                      writeCurrentStatus(output);
                  }
              }
