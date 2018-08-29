@@ -14,6 +14,7 @@
          table {
              border-collapse: collapse;
              border: 3px solid purple;
+             margin: 0 auto;
          }
          th, td {
              border: 1px solid purple;
@@ -29,12 +30,15 @@
              padding-bottom: 3px;
          }
          .current_day_type {
-             background: #ffcccc;
+             background: #ffc;
+         }
+         .current_period {
+             background: #fcc;
          }
          .free {
              font-style: italic;
              text-align: center;
-             color: #aaa;
+             color: #999;
          }
         </style>
     </head>
@@ -129,8 +133,8 @@
                "long_start":"14:05",
                "long_end":"15:25"}
          ];
-         var school_begins = "08:55";
-         var school_ends = "15:25";
+         var schoolBegins = "08:55";
+         var schoolEnds = "15:25";
 
          var pad = function(num, len) { return ("00000000" + num).substr(-len) };
          var convertTo12Hour = function(timeString) {
@@ -147,6 +151,7 @@
              var cell, text;
              var oddCell, evenCell;
              var tbody = document.getElementById('schedule_body');
+             var current = getCurrentPeriod();
 
              var now = getDate();
              var dayType;
@@ -176,9 +181,15 @@
                  var item = schedule[i];
 
                  var newRow = tbody.insertRow(tbody.rows.length);
+                 var displaying_now = false;
+                 if (item.period == current.period) {
+                     displaying_now = true;
+                 }
 
                  cell = newRow.insertCell(0);
                  cell.className = "center";
+                 if (displaying_now)
+                     cell.className += " current_period";
                  text = document.createTextNode(item.period==undefined?"":item.period);
                  cell.appendChild(text);
 
@@ -187,15 +198,22 @@
                  if (item.marn == "free") {
                      cell.className = "free";
                  }
+                 if (displaying_now)
+                     cell.className += " current_period";
                  cell.appendChild(text);
 
                  cell = newRow.insertCell(2);
                  text = document.createTextNode(item.kev);
+                 if (displaying_now)
+                     cell.className += " current_period";
                  cell.appendChild(text);
 
                  cell = newRow.insertCell(3);
-                 if (dayType == "full")
+                 if (dayType == "full") {
                      cell.className = "current_day_type";
+                     if (displaying_now)
+                         cell.className += " current_period";
+                 }
                  text = document.createTextNode(`${convertTo12Hour(item.short_start)} - ` +
                                                 `${convertTo12Hour(item.short_end)}`);
                  cell.appendChild(text);
@@ -209,18 +227,30 @@
                      oddCell.appendChild(text);
                      var text2 = text.cloneNode()
                      evenCell.appendChild(text2);
-                     if (dayType == "odd")
+                     if (dayType == "odd") {
                          oddCell.className = "current_day_type";
-                     if (dayType == "even")
+                         if (displaying_now)
+                             oddCell.className += " current_period";
+                     }
+                     if (dayType == "even") {
                          evenCell.className = "current_day_type";
+                         if (displaying_now)
+                             evenCell.className += " current_period";
+                     }
                  } else if (item.period % 2 == 1) {
                      oddCell.appendChild(text);
-                     if (dayType == "odd")
+                     if (dayType == "odd") {
                          oddCell.className = "current_day_type";
+                         if (displaying_now)
+                             oddCell.className += " current_period";
+                     }
                  } else {
                      evenCell.appendChild(text);
-                     if (dayType == "even")
+                     if (dayType == "even") {
                          evenCell.className = "current_day_type";
+                         if (displaying_now)
+                             evenCell.className += " current_period";
+                     }
                  }
              }
          };
@@ -245,48 +275,74 @@
              return d;
          };
 
+         var getCurrentPeriod = function() {
+             var now = getDate();
+             var h = pad(now.getHours(), 2);
+             var m = pad(now.getMinutes(), 2);
+             var currentTime = `${h}:${m}`;
+
+             var dummyEntry = {
+                 "period": "0",
+                 "marn": ""
+             };
+
+             var periodType;
+             if (now.getDay() == 1) {
+                 periodType = "short";
+             } else if ([2,3,4,5].includes(now.getDay())) {
+                 periodType = "long";
+             } else {
+                 periodType = "weekend";
+             }
+
+             if (periodType == "weekend") {
+                 dummyEntry['marn'] = "Weekend";
+                 dummyEntry['periodType'] = periodType;
+                 return dummyEntry;
+             }
+
+             if (currentTime < schoolBegins || currentTime > schoolEnds) {
+                 dummyEntry['marn'] = "School's out";
+                 return dummyEntry;
+             }
+
+             var start_key = `${periodType}_start`;
+             var end_key = `${periodType}_end`;
+             for (var i in schedule) {
+                 var period = schedule[i].period;
+                 if (periodType == 'long' &&
+                     (period % 2) == (now.getDay() % 2)) {
+                     // get the right even/odd dasy
+                     continue;
+                 }
+                 if (currentTime >= schedule[i][start_key] &&
+                     currentTime <= schedule[i][end_key]) {
+                     schedule[i]['periodType'] = periodType;
+                     return schedule[i];
+                 }
+             }
+         };
+
          var whereAreTheyNow = function() {
+             var current = getCurrentPeriod();
+
              now = getDate();
              var h = pad(now.getHours(), 2);
              var m = pad(now.getMinutes(), 2);
              var current_time = `${h}:${m}`;
 
-             if (current_time < school_begins || current_time > school_ends) {
-                 writeCurrentStatus("<span>School is out</span>");
+             if (current.period == 0) {
+                 writeCurrentStatus(`<span>${current.marn}</span>`);
                  return;
              }
 
-             var dayType;
-             if (now.getDay() == 1) {
-                 dayType = "short";
-             } else if ([2,3,4,5].includes(now.getDay())) {
-                 dayType = "long";
-             } else {
-                 dayType = "weekend";
-             }
+             var start_key = `${current.periodType}_start`;
+             var end_key = `${current.periodType}_end`;
 
-             if (dayType == "weekend") {
-                 writeCurrentStatus("<span>It's the weekend, they're not in class</span>");
-                 return;
-             }
-
-             var start_key = `${dayType}_start`;
-             var end_key = `${dayType}_end`;
-             for (var i in schedule) {
-                 var period = schedule[i].period;
-                 if (dayType == 'long' &&
-                     (period % 2) == (now.getDay() % 2)) {
-                     // get the right even/odd days
-                     continue;
-                 }
-                 if (current_time >= schedule[i][start_key] &&
-                     current_time <= schedule[i][end_key]) {
-                     output = `<span id="marn">Marney is in ${schedule[i]['marn']}</span>` +
-                              `<span id="kev">Kevin is in ${schedule[i]['kev']}</span>` +
-                              `<span>until ${convertTo12Hour(schedule[i][end_key])}</span>`;
-                     writeCurrentStatus(output);
-                 }
-             }
+             output = `<span id="marn">Marney is in ${current.marn}</span>` +
+                      `<span id="kev">Kevin is in ${current.kev}</span>` +
+                      `<span>until ${convertTo12Hour(current[end_key])}</span>`;
+             writeCurrentStatus(output);
          };
 
          var showCurrentTime = function() {
