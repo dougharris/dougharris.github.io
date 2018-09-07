@@ -133,9 +133,6 @@
                "long_start":"14:05",
                "long_end":"15:25"}
          ];
-         var schoolBegins = "08:55";
-         var schoolEnds = "15:25";
-
          var pad = function(num, len) { return ("00000000" + num).substr(-len) };
          var convertTo12Hour = function(timeString) {
              var parts = timeString.split(":");
@@ -176,6 +173,8 @@
                      dayType = 'even';
                      break;
              }
+
+             tbody.innerHTML = "";
 
              for (i in schedule) {
                  var item = schedule[i];
@@ -276,6 +275,9 @@
          };
 
          var getCurrentPeriod = function() {
+             var schoolBegins = "08:55";
+             var schoolEnds = "15:25";
+
              var now = getDate();
              var h = pad(now.getHours(), 2);
              var m = pad(now.getMinutes(), 2);
@@ -357,9 +359,35 @@
              document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
          };
 
-         whereAreTheyNow();
-         drawScheduleTable();
-         showCurrentTime();
+         // Set up auto-refresh on visibility change
+         var counter = 0;
+         var handleVisibilityChange = function() {
+             counter = counter + 1;
+             if (hidden === undefined || !document[hidden]) {
+                 whereAreTheyNow();
+                 drawScheduleTable();
+                 showCurrentTime();
+             }
+         };
+
+         var hidden, visibilityChange; 
+         if (typeof document.hidden !== "undefined") {
+             hidden = "hidden";
+             visibilityChange = "visibilitychange";
+         } else if (typeof document.msHidden !== "undefined") {
+             hidden = "msHidden";
+             visibilityChange = "msvisibilitychange";
+         } else if (typeof document.webkitHidden !== "undefined") {
+             hidden = "webkitHidden";
+             visibilityChange = "webkitvisibilitychange";
+         }
+         
+         if (typeof document.addEventListener === "undefined" || hidden === undefined) {
+             console.log("This browser does not support visibility events");
+         } else {
+             document.addEventListener(visibilityChange, handleVisibilityChange, false);
+         }
+         handleVisibilityChange();
         </script>
 
     </body>
