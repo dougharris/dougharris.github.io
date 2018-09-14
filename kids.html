@@ -288,11 +288,13 @@
                  "marn": ""
              };
 
-             var periodType;
+             var periodType, periodInterval;
              if (now.getDay() == 1) {
                  periodType = "short";
+                 periodInterval = 1;
              } else if ([2,3,4,5].includes(now.getDay())) {
                  periodType = "long";
+                 periodInterval = 2;
              } else {
                  periodType = "weekend";
              }
@@ -317,10 +319,23 @@
                      // get the right even/odd dasy
                      continue;
                  }
-                 if (currentTime >= schedule[i][start_key] &&
-                     currentTime <= schedule[i][end_key]) {
-                     schedule[i]['periodType'] = periodType;
-                     return schedule[i];
+                 if (schedule[i].period == undefined) {
+                     periodInterval = 1;
+                 }
+                 if (currentTime >= schedule[i][start_key]) {
+                     var periodToReturn;
+                     var nextIndex = parseInt(i) + periodInterval;
+                     if (currentTime <= schedule[i][end_key]) {
+                         periodToReturn = schedule[i];
+                     } else if (currentTime < schedule[nextIndex][start_key]) {
+                         // In between periods, show next period.
+                         periodToReturn = schedule[nextIndex];
+                         periodToReturn['coming'] = true;
+                     } else {
+                         continue;
+                     }
+                     periodToReturn['periodType'] = periodType;
+                     return periodToReturn;
                  }
              }
          };
@@ -342,8 +357,12 @@
              var end_key = `${current.periodType}_end`;
 
              output = `<span id="marn">Marney is in ${current.marn}</span>` +
-                      `<span id="kev">Kevin is in ${current.kev}</span>` +
-                      `<span>until ${convertTo12Hour(current[end_key])}</span>`;
+                      `<span id="kev">Kevin is in ${current.kev}</span>`;
+             if (current.coming) {
+                 output = output + "<span class=\"free\">in between periods</span>";
+             } else {
+                 output = output + `<span>until ${convertTo12Hour(current[end_key])}</span>`;
+             }
              writeCurrentStatus(output);
          };
 
