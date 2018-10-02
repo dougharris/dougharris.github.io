@@ -40,6 +40,12 @@
              text-align: center;
              color: #999;
          }
+         .quiet {
+             text-align: center;
+             color: #fff;
+             font-size: 16px;
+             padding-top: 30px;
+         }
         </style>
     </head>
 
@@ -66,6 +72,7 @@
                 <tbody id="schedule_body">
                 </tbody>
             </table>
+            <div class="quiet" id="testString"></div>
         </div>
 
         <script>
@@ -376,6 +383,7 @@
              };
              var now = getDate()
              document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
+             document.getElementById("testString").innerHTML = `?date=${now.toISOString()}`;
          };
 
          // Set up auto-refresh on visibility change
