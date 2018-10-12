@@ -46,6 +46,17 @@
              font-size: 16px;
              padding-top: 30px;
          }
+
+         .time_span {
+             display: inline-block;
+             text-align: right;
+         }
+
+         @media (min-device-width: 650px) {
+             .start_time:after {
+                 content: "- ";
+             }
+         }
         </style>
     </head>
 
@@ -220,18 +231,16 @@
                      if (displaying_now)
                          cell.className += " current_period";
                  }
-                 text = document.createTextNode(`${convertTo12Hour(item.short_start)} - ` +
-                                                `${convertTo12Hour(item.short_end)}`);
-                 cell.appendChild(text);
+                 textCell = createTimeCell(item, "short");
+                 cell.appendChild(textCell);
 
                  oddCell = newRow.insertCell(4);
                  evenCell = newRow.insertCell(5);
-                 text = document.createTextNode(`${convertTo12Hour(item.long_start)} - ` +
-                                                `${convertTo12Hour(item.long_end)}`);
+                 textCell = createTimeCell(item, "long");
                  if (item.period == undefined) {
                      // STEP
-                     oddCell.appendChild(text);
-                     var text2 = text.cloneNode()
+                     oddCell.appendChild(textCell);
+                     var text2 = textCell.cloneNode()
                      evenCell.appendChild(text2);
                      if (dayType == "odd") {
                          oddCell.className = "current_day_type";
@@ -244,14 +253,14 @@
                              evenCell.className += " current_period";
                      }
                  } else if (item.period % 2 == 1) {
-                     oddCell.appendChild(text);
+                     oddCell.appendChild(textCell);
                      if (dayType == "odd") {
                          oddCell.className = "current_day_type";
                          if (displaying_now)
                              oddCell.className += " current_period";
                      }
                  } else {
-                     evenCell.appendChild(text);
+                     evenCell.appendChild(textCell);
                      if (dayType == "even") {
                          evenCell.className = "current_day_type";
                          if (displaying_now)
@@ -259,6 +268,27 @@
                      }
                  }
              }
+         };
+
+         var createTimeCell = function(item, periodType) {
+             var startKey = `${periodType}_start`;
+             var endKey = `${periodType}_end`;
+             var timeCell = document.createElement('span');
+             timeCell.className = 'time_span';
+
+             var startSpan = document.createElement('span');
+             startSpan.className += ' start_time';
+             var textNode = document.createTextNode(`${convertTo12Hour(item[startKey])} `);
+             startSpan.appendChild(textNode);
+             timeCell.append(startSpan);
+
+             var endSpan = document.createElement('span');
+             endSpan.className += ' end_time';
+             textNode = document.createTextNode(`${convertTo12Hour(item[endKey])}`);
+             endSpan.appendChild(textNode);
+             timeCell.append(endSpan);
+
+             return timeCell;
          };
 
          var writeCurrentStatus = function(output) {
@@ -397,7 +427,7 @@
              }
          };
 
-         var hidden, visibilityChange; 
+         var hidden, visibilityChange;
          if (typeof document.hidden !== "undefined") {
              hidden = "hidden";
              visibilityChange = "visibilitychange";
