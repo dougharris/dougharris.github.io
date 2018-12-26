@@ -240,7 +240,7 @@
                  if (item.period == undefined) {
                      // STEP
                      oddCell.appendChild(textCell);
-                     var text2 = textCell.cloneNode()
+                     var text2 = textCell.cloneNode(true)
                      evenCell.appendChild(text2);
                      if (dayType == "odd") {
                          oddCell.className = "current_day_type";
@@ -356,12 +356,15 @@
                      // get the right even/odd dasy
                      continue;
                  }
-                 if (schedule[i].period == undefined) {
-                     periodInterval = 1;
-                 }
                  if (currentTime >= schedule[i][start_key]) {
                      var periodToReturn;
-                     var nextIndex = parseInt(i) + periodInterval;
+                     var nextIndex;
+                     if (i == 3 || i == 4) {
+                         // Don't skip over lunch!
+                         nextIndex = parseInt(i) + 1;
+                     } else {
+                         nextIndex = parseInt(i) + periodInterval;
+                     }
                      if (currentTime <= schedule[i][end_key]) {
                          periodToReturn = schedule[i];
                      } else if (currentTime < schedule[nextIndex][start_key]) {
