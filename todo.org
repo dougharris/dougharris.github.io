@@ -1,0 +1,21 @@
+* Broken
+  - [X] periodInterval doesn't properly account for STEP. See
+    file:///Users/dharris/src/dougharris.github.io/kids.html?date=2018-09-19T12:29:00
+    file:///Users/dharris/src/dougharris.github.io/kids.html?date=2018-10-09T14:00:00
+  - [X] Possibly related: ?date=2018-11-09T19:03:43.482Z - highlights 7th period as current on
+    an even day.
+* Enhancements
+  - [X] provide (hidden) string with date for testing
+  - [X] change layout on narrow screens to remove the hyphen between start and end times and
+    force the times to be on separate lines (css breakpoints!)
+  - [ ] add buttons to override day type (e.g. all day on a wednesday)
+* Generalizing & Monetizing
+** Generalizing
+*** For Wilson
+    - separate period begin/end data from student data
+    - make separate student class names that correlate with periods
+    - dynamic table for 1-4 students, more?
+    - canonical list of irregular days
+    - preserve privacy but also allow ability to share with others
+*** Monetizing
+    - offer at ~$15/family/year with some portion going to Wilson Drama
