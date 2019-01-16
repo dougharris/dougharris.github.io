@@ -1,0 +1,54 @@
+body {
+    font-family: "Gill Sans", Helvetica, Arial;
+}
+#current span {
+    display: block;
+    text-align: center;
+    padding-bottom: 5px;
+}
+table {
+    border-collapse: collapse;
+    border: 3px solid purple;
+    margin: 0 auto;
+}
+th, td {
+    border: 1px solid purple;
+    padding: 5px 8px;
+}
+td.center {
+    text-align: center;
+}
+#time {
+    font-size: smaller;
+    text-align: right;
+    color: #666;
+    padding-bottom: 3px;
+}
+.current_day_type {
+    background: #ffc;
+}
+.current_period {
+    background: #fcc;
+}
+.free {
+    font-style: italic;
+    text-align: center;
+    color: #999;
+}
+.quiet {
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    padding-top: 30px;
+}
+
+.time_span {
+    display: inline-block;
+    text-align: right;
+}
+
+@media (min-width: 568px) {
+    .start_time:after {
+        content: "- ";
+    }
+}
