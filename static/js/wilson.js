@@ -20,7 +20,19 @@ var students = {
         "6": "US Gov",
         "7": "free",
         "8": "AP Art"
+    },
+    "oscar": {
+        "name": "Oscar",
+        "1": "free",
+        "2": "Physics",
+        "3": "English",
+        "4": "Econ",
+        "5": "US Gov",
+        "6": "DC History",
+        "7": "French",
+        "8": "Finance"
     }
+
 };
     
 var schedule = [
@@ -78,9 +90,20 @@ var convertTo12Hour = function(timeString) {
         hour = hour - 12;
     }
     return `${hour}:${parts[1]}`;
-}
+};
 
-var drawScheduleTable = function() {
+var addKidsToHeader = function(myKids) {
+    var allHeader = document.querySelector('th[class=all_col]');
+    var cell, text;
+    for (k in myKids) {
+        cell = document.createElement('th');
+        text = document.createTextNode(students[myKids[k]].name);
+        cell.appendChild(text);
+        allHeader.parentNode.insertBefore(cell, allHeader);
+    }
+};
+
+var drawScheduleTable = function(myKids) {
     var cell, text;
     var oddCell, evenCell;
     var tbody = document.getElementById('schedule_body');
@@ -117,33 +140,35 @@ var drawScheduleTable = function() {
 
         var newRow = tbody.insertRow(tbody.rows.length);
         var displaying_now = false;
+        var kid, subject;
         if (item.period == current.period) {
             displaying_now = true;
         }
 
-        cell = newRow.insertCell(0);
+        cell = newRow.insertCell();
         cell.className = "center";
         if (displaying_now)
             cell.className += " current_period";
         text = document.createTextNode(item.period==undefined?"":item.period);
         cell.appendChild(text);
 
-        cell = newRow.insertCell(1);
-        text = document.createTextNode(item.marn);
-        if (item.marn == "free") {
-            cell.className = "free";
+        for (k in myKids) {
+            cell = newRow.insertCell();
+            kid = students[myKids[k]];
+            subject = kid[item.period];
+            if (subject == undefined) {
+                subject = "STEP";
+            }
+            text = document.createTextNode(subject);
+            if (subject == "free") {
+                cell.className = "free";
+            }
+            if (displaying_now)
+                cell.className += " current_period";
+            cell.appendChild(text);
         }
-        if (displaying_now)
-            cell.className += " current_period";
-        cell.appendChild(text);
 
-        cell = newRow.insertCell(2);
-        text = document.createTextNode(item.kev);
-        if (displaying_now)
-            cell.className += " current_period";
-        cell.appendChild(text);
-
-        cell = newRow.insertCell(3);
+        cell = newRow.insertCell();
         if (dayType == "full") {
             cell.className = "current_day_type";
             if (displaying_now)
@@ -152,8 +177,8 @@ var drawScheduleTable = function() {
         textCell = createTimeCell(item, "short");
         cell.appendChild(textCell);
 
-        oddCell = newRow.insertCell(4);
-        evenCell = newRow.insertCell(5);
+        oddCell = newRow.insertCell();
+        evenCell = newRow.insertCell();
         textCell = createTimeCell(item, "long");
         if (item.period == undefined) {
             // STEP
@@ -298,10 +323,10 @@ var getCurrentPeriod = function() {
     }
 };
 
-var whereAreTheyNow = function() {
+var whereAreTheyNow = function(myKids) {
     var current = getCurrentPeriod();
 
-    now = getDate();
+    var now = getDate();
     var h = pad(now.getHours(), 2);
     var m = pad(now.getMinutes(), 2);
     var current_time = `${h}:${m}`;
@@ -314,8 +339,13 @@ var whereAreTheyNow = function() {
     var start_key = `${current.periodType}_start`;
     var end_key = `${current.periodType}_end`;
 
-    output = `<span id="marn">Marney is in ${current.marn}</span>` +
-        `<span id="kev">Kevin is in ${current.kev}</span>`;
+    var output = "";
+    var student;
+    for (k in myKids) {
+        student = students[myKids[k]];
+        output = output +`<span id="${myKids[k]}">${student.name} is in ` +
+            `${student[current.period]}</span>`;
+    }
     if (current.coming) {
         output = output + "<span class=\"free\">in between periods</span>";
     } else {
@@ -332,20 +362,27 @@ var showCurrentTime = function() {
         hour: 'numeric',
         minute: 'numeric'
     };
-    var now = getDate()
+    var now = getDate();
     document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
     document.getElementById("testString").innerHTML = `?date=${now.toISOString()}`;
 };
 
 // Set up auto-refresh on visibility change
 var counter = 0;
+var myKids = ['kev', 'marn', 'oscar'];
+
 var handleVisibilityChange = function() {
     counter = counter + 1;
     if (hidden === undefined || !document[hidden]) {
-        whereAreTheyNow();
-        drawScheduleTable();
+        whereAreTheyNow(myKids);
+        drawScheduleTable(myKids);
         showCurrentTime();
     }
+};
+
+var drawFirstTable = function() {
+    addKidsToHeader(myKids);
+    handleVisibilityChange();
 };
 
 var hidden, visibilityChange;
