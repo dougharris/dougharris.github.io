@@ -1,39 +1,4 @@
-var students = {
-    "kev": {
-        "name": "Kevin",
-        "1": "Health",
-        "2": "Engineering",
-        "3": "Choir",
-        "4": "English",
-        "5": "Precalc",
-        "6": "Chinese",
-        "7": "Biology",
-        "8": "History"
-    },
-    "marn": {
-        "name": "Marney",
-        "1": "free",
-        "2": "Choir",
-        "3": "Comp Sci",
-        "4": "Env Sci",
-        "5": "English",
-        "6": "US Gov",
-        "7": "free",
-        "8": "AP Art"
-    },
-    "oscar": {
-        "name": "Oscar",
-        "1": "free",
-        "2": "Physics",
-        "3": "English",
-        "4": "Econ",
-        "5": "US Gov",
-        "6": "DC History",
-        "7": "French",
-        "8": "Finance"
-    }
-
-};
+var students = { };
     
 var schedule = [
     { "period": 1,
@@ -95,9 +60,9 @@ var convertTo12Hour = function(timeString) {
 var addKidsToHeader = function(myKids) {
     var allHeader = document.querySelector('th[class=all_col]');
     var cell, text;
-    for (k in myKids) {
+    for (let k of myKids) {
         cell = document.createElement('th');
-        text = document.createTextNode(students[myKids[k]].name);
+        text = document.createTextNode(students[k].name);
         cell.appendChild(text);
         allHeader.parentNode.insertBefore(cell, allHeader);
     }
@@ -152,9 +117,9 @@ var drawScheduleTable = function(myKids) {
         text = document.createTextNode(item.period==undefined?"":item.period);
         cell.appendChild(text);
 
-        for (k in myKids) {
+        for (let k of myKids) {
             cell = newRow.insertCell();
-            kid = students[myKids[k]];
+            kid = students[k];
             subject = kid[item.period];
             if (subject == undefined) {
                 subject = "STEP";
@@ -341,9 +306,9 @@ var whereAreTheyNow = function(myKids) {
 
     var output = "";
     var student;
-    for (k in myKids) {
-        student = students[myKids[k]];
-        output = output +`<span id="${myKids[k]}">${student.name} is in ` +
+    for (let k of myKids) {
+        student = students[k];
+        output = output +`<span id="${k}">${student.name} is in ` +
             `${student[current.period]}</span>`;
     }
     if (current.coming) {
@@ -369,9 +334,9 @@ var showCurrentTime = function() {
 
 // Set up auto-refresh on visibility change
 var counter = 0;
-var myKids = ['kev', 'marn', 'oscar'];
+var theKids = ['kev', 'marn', 'oscar'];
 
-var handleVisibilityChange = function() {
+var handleVisibilityChange = function(myKids) {
     counter = counter + 1;
     if (hidden === undefined || !document[hidden]) {
         whereAreTheyNow(myKids);
@@ -380,9 +345,44 @@ var handleVisibilityChange = function() {
     }
 };
 
-var drawFirstTable = function() {
-    addKidsToHeader(myKids);
-    handleVisibilityChange();
+var loadOneStudent = function(aKid) {
+    var xhr = new XMLHttpRequest();
+    let url = `http://schedule-data.s3-website-us-east-1.amazonaws.com/${aKid}.json`;
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+          let data = xhr.response;
+          students[data["code"]] = data; 
+      } else {
+          console.log(`Could not load schedule data for ${aKid}`);
+      }
+    };
+    xhr.send();
+};
+
+var loadStudents = function(myKids) {
+    let allKidRequests = [];
+    for (let s of myKids) {
+        loadOneStudent(s);
+    }
+};
+
+var drawFirstTable = function(myKids) {
+    console.log(`keys in students: ${Object.keys(students)}`);
+    if (Object.keys(students).length == myKids.length) {
+        addKidsToHeader(myKids);
+        handleVisibilityChange(myKids);
+    } else {
+        let waitTime = 100;
+        setTimeout(drawFirstTable, waitTime, myKids);
+    }
+};
+
+var showSchedule = function() {
+    loadStudents(theKids);
+    drawFirstTable(theKids);
 };
 
 var hidden, visibilityChange;
