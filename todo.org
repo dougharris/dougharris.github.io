@@ -9,6 +9,7 @@
   - [X] change layout on narrow screens to remove the hyphen between start and end times and
     force the times to be on separate lines (css breakpoints!)
   - [ ] add buttons to override day type (e.g. all day on a wednesday)
+  - [ ] cookie or local storage to remember who you're tracking
 * Generalizing & Monetizing
 ** Generalizing
 *** For Wilson

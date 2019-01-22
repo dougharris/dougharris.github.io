@@ -1,0 +1,1 @@
+aws s3 sync . s3://schedule-code --exclude ".git/*" --exclude "students/*" --exclude="todo.org" --exclude="aws-sync"
