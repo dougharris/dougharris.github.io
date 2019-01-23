@@ -60,7 +60,7 @@ var convertTo12Hour = function(timeString) {
 var addKidsToHeader = function(myKids) {
     var allHeader = document.querySelector('th[class=all_col]');
     var cell, text;
-    for (let k of myKids) {
+    for (var k of myKids) {
         cell = document.createElement('th');
         text = document.createTextNode(students[k].name);
         cell.appendChild(text);
@@ -106,6 +106,7 @@ var drawScheduleTable = function(myKids) {
         var newRow = tbody.insertRow(tbody.rows.length);
         var displaying_now = false;
         var kid, subject;
+        var textCell;
         if (item.period == current.period) {
             displaying_now = true;
         }
@@ -117,7 +118,7 @@ var drawScheduleTable = function(myKids) {
         text = document.createTextNode(item.period==undefined?"":item.period);
         cell.appendChild(text);
 
-        for (let k of myKids) {
+        for (var k of myKids) {
             cell = newRow.insertCell();
             kid = students[k];
             subject = kid[item.period];
@@ -148,7 +149,7 @@ var drawScheduleTable = function(myKids) {
         if (item.period == undefined) {
             // STEP
             oddCell.appendChild(textCell);
-            var text2 = textCell.cloneNode(true)
+            var text2 = textCell.cloneNode(true);
             evenCell.appendChild(text2);
             if (dayType == "odd") {
                 oddCell.className = "current_day_type";
@@ -188,13 +189,13 @@ var createTimeCell = function(item, periodType) {
     startSpan.className += ' start_time';
     var textNode = document.createTextNode(`${convertTo12Hour(item[startKey])} `);
     startSpan.appendChild(textNode);
-    timeCell.append(startSpan);
+    timeCell.appendChild(startSpan);
 
     var endSpan = document.createElement('span');
     endSpan.className += ' end_time';
     textNode = document.createTextNode(`${convertTo12Hour(item[endKey])}`);
     endSpan.appendChild(textNode);
-    timeCell.append(endSpan);
+    timeCell.appendChild(endSpan);
 
     return timeCell;
 };
@@ -306,7 +307,7 @@ var whereAreTheyNow = function(myKids) {
 
     var output = "";
     var student;
-    for (let k of myKids) {
+    for (var k of myKids) {
         student = students[k];
         output = output +`<span id="${k}">${student.name} is in ` +
             `${student[current.period]}</span>`;
@@ -347,13 +348,13 @@ var handleVisibilityChange = function(myKids) {
 
 var loadOneStudent = function(aKid) {
     var xhr = new XMLHttpRequest();
-    let url = `http://schedule-data.s3-website-us-east-1.amazonaws.com/${aKid}.json`;
+    var url = `http://schedule-data.s3-website-us-east-1.amazonaws.com/${aKid}.json`;
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
       var status = xhr.status;
       if (status === 200) {
-          let data = xhr.response;
+          var data = xhr.response;
           students[data["code"]] = data; 
       } else {
           console.log(`Could not load schedule data for ${aKid}`);
@@ -363,8 +364,8 @@ var loadOneStudent = function(aKid) {
 };
 
 var loadStudents = function(myKids) {
-    let allKidRequests = [];
-    for (let s of myKids) {
+    var allKidRequests = [];
+    for (var s of myKids) {
         loadOneStudent(s);
     }
 };
@@ -375,7 +376,7 @@ var drawFirstTable = function(myKids) {
         addKidsToHeader(myKids);
         handleVisibilityChange(myKids);
     } else {
-        let waitTime = 100;
+        var waitTime = 100;
         setTimeout(drawFirstTable, waitTime, myKids);
     }
 };
