@@ -20,3 +20,9 @@
     - preserve privacy but also allow ability to share with others
 *** Monetizing
     - offer at ~$15/family/year with some portion going to Wilson Drama
+*** Prep & Deploy [0/5]
+    - [ ] Choose and purchase domain name
+    - [ ] Set up cloudfront
+    - [ ] Set up input form
+    - [ ] Script form data
+    - [ ] Parameterize the data of the kids to show

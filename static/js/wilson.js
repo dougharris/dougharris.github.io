@@ -337,8 +337,9 @@ var showCurrentTime = function() {
 var counter = 0;
 var theKids = ['kev', 'marn', 'oscar'];
 
-var handleVisibilityChange = function(myKids) {
+var handleVisibilityChange = function() {
     counter = counter + 1;
+    var myKids = theKids;
     if (hidden === undefined || !document[hidden]) {
         whereAreTheyNow(myKids);
         drawScheduleTable(myKids);
@@ -374,7 +375,7 @@ var drawFirstTable = function(myKids) {
     console.log(`keys in students: ${Object.keys(students)}`);
     if (Object.keys(students).length == myKids.length) {
         addKidsToHeader(myKids);
-        handleVisibilityChange(myKids);
+        handleVisibilityChange();
     } else {
         var waitTime = 100;
         setTimeout(drawFirstTable, waitTime, myKids);

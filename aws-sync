@@ -1,1 +1,9 @@
+#! /bin/bash
+. ~/.lpassfunctions 
+
+LASTPASS_KEY_FOLDER="dharris@gmail.com/API_KEYS"
+set_env_var_from_lastpass AWS_SECRET_ACCESS_KEY
+set_env_var_from_lastpass AWS_ACCESS_KEY_ID
 aws s3 sync . s3://schedule-code --exclude ".git/*" --exclude "students/*" --exclude="todo.org" --exclude="aws-sync"
+
+
