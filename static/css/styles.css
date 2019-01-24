@@ -8,11 +8,20 @@ body {
 }
 table {
     border-collapse: collapse;
-    border: 3px solid purple;
+    border: 3px solid #006e1c;
     margin: 0 auto;
+
+    background-color: #ffffff;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#F2FEF9));
+    background-image: -webkit-linear-gradient(top, #ffffff, #F2FEF9);
+    background-image: -moz-linear-gradient(top, #ffffff, #F2FEF9);
+    background-image: -ms-linear-gradient(top, #ffffff, #F2FEF9);
+    background-image: -o-linear-gradient(top, #ffffff, #F2FEF9);
+    background-image: linear-gradient(to bottom, #ffffff, #F2FEF9);
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffffff, endColorstr=#F2FEF9);
 }
 th, td {
-    border: 1px solid purple;
+    border: 1px solid #006e1c;
     padding: 5px 8px;
 }
 td.center {
@@ -25,11 +34,26 @@ td.center {
     padding-bottom: 3px;
 }
 .current_day_type {
-    background: #ffc;
+    background-color: #f4f5f5;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f4f5f5), to(#dfdddd));
+    background-image: -webkit-linear-gradient(top, #f4f5f5, #dfdddd);
+    background-image: -moz-linear-gradient(top, #f4f5f5, #dfdddd);
+    background-image: -ms-linear-gradient(top, #f4f5f5, #dfdddd);
+    background-image: -o-linear-gradient(top, #f4f5f5, #dfdddd);
+    background-image: linear-gradient(to bottom, #f4f5f5, #dfdddd);
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#f4f5f5, endColorstr=#dfdddd);
 }
 .current_period {
-    background: #fcc;
+    background-color: #a9db80;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#a9db80), to(#96c56f));
+    background-image: -webkit-linear-gradient(top, #a9db80, #96c56f);
+    background-image: -moz-linear-gradient(top, #a9db80, #96c56f);
+    background-image: -ms-linear-gradient(top, #a9db80, #96c56f);
+    background-image: -o-linear-gradient(top, #a9db80, #96c56f);
+    background-image: linear-gradient(to bottom, #a9db80, #96c56f);
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#a9db80, endColorstr=#96c56f);
 }
+
 .free {
     font-style: italic;
     text-align: center;
