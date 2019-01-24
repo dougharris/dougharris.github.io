@@ -220,6 +220,22 @@ var getDate = function() {
     return d;
 };
 
+var getKids = function() {
+    var params = (new URL(document.location)).searchParams;
+    var studentParam = params.get("students");
+    if (studentParam !== null) {
+        theKids = studentParam.split(/[ ,+]/);
+        localStorage.setItem('theKids', theKids);
+    } else if (localStorage.getItem('theKids')) {
+        theKids = localStorage.getItem('theKids').split(/[ ,+]/);
+    }
+
+    if (!theKids) {
+        var placeHolder = document.querySelector("tr#placeholder-row td");
+        placeHolder.innerHTML = "<b>Error - can't find the kids</b>";
+    }
+};
+
 var getCurrentPeriod = function() {
     var schoolBegins = "08:55";
     var schoolEnds = "15:25";
@@ -231,7 +247,7 @@ var getCurrentPeriod = function() {
 
     var dummyEntry = {
         "period": "0",
-        "marn": ""
+        "student1": ""
     };
 
     var periodType, periodInterval;
@@ -246,13 +262,13 @@ var getCurrentPeriod = function() {
     }
 
     if (periodType == "weekend") {
-        dummyEntry['marn'] = "Weekend";
+        dummyEntry['student1'] = "Weekend";
         dummyEntry['periodType'] = periodType;
         return dummyEntry;
     }
 
     if (currentTime < schoolBegins || currentTime > schoolEnds) {
-        dummyEntry['marn'] = "School's out";
+        dummyEntry['student1'] = "School's out";
         return dummyEntry;
     }
 
@@ -298,7 +314,7 @@ var whereAreTheyNow = function(myKids) {
     var current_time = `${h}:${m}`;
 
     if (current.period == 0) {
-        writeCurrentStatus(`<span>${current.marn}</span>`);
+        writeCurrentStatus(`<span>${current.student1}</span>`);
         return;
     }
 
@@ -309,8 +325,13 @@ var whereAreTheyNow = function(myKids) {
     var student;
     for (var k of myKids) {
         student = students[k];
-        output = output +`<span id="${k}">${student.name} is in ` +
-            `${student[current.period]}</span>`;
+        output = output +`<span id="${k}">${student.name} is in `;
+        if (current.period === undefined) {
+            output = output + "STEP";
+        } else {
+            output = output + student[current.period];
+        }
+        output = output + "</span>";
     }
     if (current.coming) {
         output = output + "<span class=\"free\">in between periods</span>";
@@ -333,16 +354,10 @@ var showCurrentTime = function() {
     document.getElementById("testString").innerHTML = `?date=${now.toISOString()}`;
 };
 
-// Set up auto-refresh on visibility change
-var counter = 0;
-var theKids = ['kev', 'marn', 'oscar'];
-
 var handleVisibilityChange = function() {
-    counter = counter + 1;
-    var myKids = theKids;
     if (hidden === undefined || !document[hidden]) {
-        whereAreTheyNow(myKids);
-        drawScheduleTable(myKids);
+        whereAreTheyNow(theKids);
+        drawScheduleTable(theKids);
         showCurrentTime();
     }
 };
@@ -372,7 +387,6 @@ var loadStudents = function(myKids) {
 };
 
 var drawFirstTable = function(myKids) {
-    console.log(`keys in students: ${Object.keys(students)}`);
     if (Object.keys(students).length == myKids.length) {
         addKidsToHeader(myKids);
         handleVisibilityChange();
@@ -383,6 +397,7 @@ var drawFirstTable = function(myKids) {
 };
 
 var showSchedule = function() {
+    getKids();
     loadStudents(theKids);
     drawFirstTable(theKids);
 };
@@ -404,4 +419,6 @@ if (typeof document.addEventListener === "undefined" || hidden === undefined) {
 } else {
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
 }
-// handleVisibilityChange();
+
+var theKids;
+
