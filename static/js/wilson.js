@@ -204,25 +204,36 @@ var writeCurrentStatus = function(output) {
     document.getElementById("current").innerHTML = output;
 }
 
+var getParameterByName = function(name, url) {
+    try {
+        var params = (new URL(document.location)).searchParams;
+        var paramValue = params.get(name);
+        return paramValue;
+    } catch (error) {
+        // Support for iOS 9 and probably some other older browsers
+        // Adapted from https://stackoverflow.com/a/901144/138776
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+};
 
 var getDate = function() {
     var d = new Date();
-    try {
-        // ?date=2018-08-21T13:09:00
-        var params = (new URL(document.location)).searchParams;
-        var dateParam = params.get("date");
-        if (dateParam !== null) {
-            d = new Date(dateParam);
-        }
-    } catch (error) {
-        console.log("can't read params <iOS 11");
+    // ?date=2018-08-21T13:09:00
+    var dateParam = getParameterByName("date");
+    if (dateParam !== null) {
+        d = new Date(dateParam);
     }
     return d;
 };
 
 var getKids = function() {
-    var params = (new URL(document.location)).searchParams;
-    var studentParam = params.get("students");
+    var studentParam = getParameterByName("students");
     if (studentParam !== null) {
         theKids = studentParam.split(/[ ,+]/);
         localStorage.setItem('theKids', theKids);
