@@ -20,12 +20,13 @@
     - preserve privacy but also allow ability to share with others
 *** Monetizing
     - offer at ~$15/family/year with some portion going to Wilson Drama
-*** Prep & Deploy [2/8]
-    - [ ] Choose and purchase domain name
-    - [ ] Set up cloudfront or cloudflare
+*** Prep & Deploy [4/9]
+    - [X] Choose and purchase domain name
+    - [X] Set up cloudfront or cloudflare
     - [ ] Set up input form
     - [ ] Script form data
     - [X] Parameterize the data of the kids to show
     - [X] Support parameters on iOS 9
     - [ ] Create help/about page
     - [ ] Change debug string to a show/hide button
+    - [ ] Add dummy data for demo and initial load

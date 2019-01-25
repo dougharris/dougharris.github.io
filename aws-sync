@@ -18,7 +18,7 @@ then
         --exclude="todo.org" --exclude="aws-sync"
 elif [[ $WHAT == "data" ]]
 then
-    aws s3 sync students/ s3://schedule-data
+    aws s3 sync students/ s3://data.wilsonschedule.com
 fi
 
 

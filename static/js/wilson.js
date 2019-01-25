@@ -375,7 +375,7 @@ var handleVisibilityChange = function() {
 
 var loadOneStudent = function(aKid) {
     var xhr = new XMLHttpRequest();
-    var url = `http://schedule-data.s3-website-us-east-1.amazonaws.com/${aKid}.json`;
+    var url = `http://data.wilsonschedule.com/${aKid}.json`;
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     xhr.onload = function() {
