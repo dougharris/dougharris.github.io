@@ -14,7 +14,7 @@ fi
 
 if [[ $WHAT == "code" ]]
 then
-    aws s3 sync . s3://schedule-code --exclude ".git/*" --exclude "students/*" \
+    aws s3 sync . s3://wilsonschedule.com --exclude ".git/*" --exclude "students/*" \
         --exclude="todo.org" --exclude="aws-sync"
 elif [[ $WHAT == "data" ]]
 then
