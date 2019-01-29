@@ -281,7 +281,7 @@ var getCurrentPeriod = function() {
     }
 
     if (currentTime < schoolBegins || currentTime > schoolEnds) {
-        dummyEntry['student1'] = "School's out";
+        dummyEntry['student1'] = "School&rsquo;s out";
         return dummyEntry;
     }
 
