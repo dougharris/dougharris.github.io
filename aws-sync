@@ -14,6 +14,7 @@ fi
 
 if [[ $WHAT == "code" ]]
 then
+    pandoc -s --template=static/page-template.html -f markdown -t html < about.md  > about.html
     aws s3 sync . s3://wilsonschedule.com --exclude ".git/*" --exclude "students/*" \
         --exclude="todo.org" --exclude="aws-sync"
 elif [[ $WHAT == "data" ]]

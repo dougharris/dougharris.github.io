@@ -242,8 +242,10 @@ var getKids = function() {
     }
 
     if (!theKids) {
-        var placeHolder = document.querySelector("tr#placeholder-row td");
-        placeHolder.innerHTML = "<b>Error - can't find the kids</b>";
+        theKids = [ "one", "two" ];
+        var overlay = "<div id='overlay'><span>Sample<br>Schedules</span></div>";
+        var table = document.querySelector("table");
+        table.insertAdjacentHTML('beforeend', overlay);
     }
 };
 

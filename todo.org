@@ -10,6 +10,8 @@
     force the times to be on separate lines (css breakpoints!)
   - [ ] add buttons to override day type (e.g. all day on a wednesday)
   - [ ] cookie or local storage to remember who you're tracking
+  - [ ] google analytics tracking, esp. which students are tracked most
+  - [ ] choose a font that looks good on samsung/android as well
 * Generalizing & Monetizing
 ** Generalizing
 *** For Wilson
@@ -20,13 +22,13 @@
     - preserve privacy but also allow ability to share with others
 *** Monetizing
     - offer at ~$15/family/year with some portion going to Wilson Drama
-*** Prep & Deploy [4/9]
+*** Prep & Deploy [6/9]
     - [X] Choose and purchase domain name
     - [X] Set up cloudfront or cloudflare
     - [ ] Set up input form
     - [ ] Script form data
     - [X] Parameterize the data of the kids to show
     - [X] Support parameters on iOS 9
-    - [ ] Create help/about page
+    - [X] Create help/about page
     - [ ] Change debug string to a show/hide button
-    - [ ] Add dummy data for demo and initial load
+    - [X] Add dummy data for demo and initial load
