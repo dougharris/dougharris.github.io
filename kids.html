@@ -3,6 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Kids Today</title>
+        <script type="text/javascript" src="static/js/knock-trigger.js"></script>
         <script type="text/javascript" src="static/js/wilson.js"></script>
         <link rel="stylesheet" type="text/css" href="static/css/styles.css" />
     </head>
@@ -33,13 +34,23 @@
                 </tbody>
             </table>
             <h1>Wilson Schedule</h1>
-            <p>Find out more <a href="about.html">about this site</a></p>
-            <div class="quiet" id="testString"></div>
+            <div id="about-link">
+                <p>Find out more <a href="about.html">about this site</a></p>
+            </div>
+            <details open="false">
+                <summary>Want a different time?</summary>
+                <form id="dateChangeForm">
+                    <input type="datetime-local" id="scheduleTime" name="date" value="" />
+                    <input type="submit" value="Go">
+                </form>
+
+                <a onClick="setDate(); refreshPage()">
+                    <button>Reset to Current Time</button>
+                </a>
+
+                <div class="quiet" id="testString">
+                </div>
+            </details>
         </div>
-
-        <script>
-         showSchedule();
-        </script>
-
     </body>
 </html>

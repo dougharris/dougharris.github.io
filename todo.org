@@ -12,6 +12,8 @@
   - [ ] cookie or local storage to remember who you're tracking
   - [ ] google analytics tracking, esp. which students are tracked most
   - [ ] choose a font that looks good on samsung/android as well
+  - [ ] After 9pm(?) highlight tomorrow instead of today
+  - [ ] Delete date stored in localStorage if set >N hours ago (where N is 2? 6? 24?)
 * Generalizing & Monetizing
 ** Generalizing
 *** For Wilson

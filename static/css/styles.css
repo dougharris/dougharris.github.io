@@ -81,9 +81,12 @@ td.center {
     text-align: center;
     color: #999;
 }
-.quiet {
+
+details {
     text-align: center;
-    color: #fff;
+}
+
+.quiet {
     font-size: 16px;
     padding-top: 30px;
 }
@@ -111,4 +114,12 @@ h1 {
 .page-content img {
     display: block;
     margin: 0 auto;
+}
+
+#testString {
+    color: #fff;
+}
+
+#about-link {
+    text-align: center;
 }

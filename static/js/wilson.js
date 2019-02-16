@@ -146,6 +146,11 @@ var drawScheduleTable = function(myKids) {
         oddCell = newRow.insertCell();
         evenCell = newRow.insertCell();
         textCell = createTimeCell(item, "long");
+        oddCell.setAttribute("dayType", "odd");
+        evenCell.addEventListener("click", knockTrigger.knockClickHandler);
+        evenCell.setAttribute("period", item.period);
+        evenCell.setAttribute("dayType", "even");
+
         if (item.period == undefined) {
             // STEP
             oddCell.appendChild(textCell);
@@ -223,13 +228,36 @@ var getParameterByName = function(name, url) {
 };
 
 var getDate = function() {
-    var d = new Date();
+    var d;
     // ?date=2018-08-21T13:09:00
     var dateParam = getParameterByName("date");
     if (dateParam !== null) {
         d = new Date(dateParam);
+    } else if (localStorage.getItem('date')) {
+        var utcDate = new Date(localStorage.getItem('date'));
+        d = new Date(utcDate);
+    } else {
+        d = new Date();
     }
     return d;
+};
+
+var setDate = function(dateTime) {
+    if (dateTime == null || dateTime == "") {
+        localStorage.removeItem('date');
+    } else {
+        localStorage.setItem('date', dateTime);
+    }
+};
+
+var updateDisplayTime = function(event) {
+    var newTime = document.getElementById('scheduleTime').value; // shown as local
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    var naiveUTCDate = new Date(newTime);                        // UTC but off by TZ diff
+    naiveUTCDate.setTime(naiveUTCDate.getTime() + tzoffset);     // add the offset
+    setDate(naiveUTCDate.toISOString());
+    refreshPage();
+    event.preventDefault();
 };
 
 var getKids = function() {
@@ -365,9 +393,15 @@ var showCurrentTime = function() {
     var now = getDate();
     document.getElementById("time").innerHTML = now.toLocaleDateString("en-US", options);
     document.getElementById("testString").innerHTML = `?date=${now.toISOString()}`;
+
+    // Display time picker in local time
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(now-tzoffset)).toISOString().slice(0,-1);
+    var localISOTimeWithoutSeconds = localISOTime.slice(0,16);
+    document.getElementById("scheduleTime").value = localISOTime.slice(0,16);
 };
 
-var handleVisibilityChange = function() {
+var refreshPage = function() {
     if (hidden === undefined || !document[hidden]) {
         whereAreTheyNow(theKids);
         drawScheduleTable(theKids);
@@ -402,7 +436,7 @@ var loadStudents = function(myKids) {
 var drawFirstTable = function(myKids) {
     if (Object.keys(students).length == myKids.length) {
         addKidsToHeader(myKids);
-        handleVisibilityChange();
+        refreshPage();
     } else {
         var waitTime = 100;
         setTimeout(drawFirstTable, waitTime, myKids);
@@ -430,8 +464,15 @@ if (typeof document.hidden !== "undefined") {
 if (typeof document.addEventListener === "undefined" || hidden === undefined) {
     console.log("This browser does not support visibility events");
 } else {
-    document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    document.addEventListener(visibilityChange, refreshPage, false);
 }
 
 var theKids;
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    document.getElementById("dateChangeForm").onsubmit=updateDisplayTime;
+    showSchedule();
+    knockTrigger.setTriggerAttribute("period");
+    knockTrigger.setTriggerPattern(["3", "4", "3", "5"]);
+});
 
