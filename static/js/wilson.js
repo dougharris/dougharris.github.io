@@ -134,7 +134,9 @@ var drawScheduleTable = function(myKids) {
             cell.appendChild(text);
         }
 
+        // All-day times
         cell = newRow.insertCell();
+        cell.className = "time_cell";
         if (dayType == "full") {
             cell.className = "current_day_type";
             if (displaying_now)
@@ -143,8 +145,11 @@ var drawScheduleTable = function(myKids) {
         textCell = createTimeCell(item, "short");
         cell.appendChild(textCell);
 
+        // Odd and even day times
         oddCell = newRow.insertCell();
+        oddCell.classList.add("time_cell");
         evenCell = newRow.insertCell();
+        evenCell.classList.add("time_cell");
         textCell = createTimeCell(item, "long");
         oddCell.setAttribute("dayType", "odd");
         evenCell.addEventListener("click", knockTrigger.knockClickHandler);
@@ -157,28 +162,28 @@ var drawScheduleTable = function(myKids) {
             var text2 = textCell.cloneNode(true);
             evenCell.appendChild(text2);
             if (dayType == "odd") {
-                oddCell.className = "current_day_type";
+                oddCell.classList.add("current_day_type");
                 if (displaying_now)
-                    oddCell.className += " current_period";
+                    oddCell.classList.add("current_period");
             }
             if (dayType == "even") {
-                evenCell.className = "current_day_type";
+                evenCell.classList.add("current_day_type");
                 if (displaying_now)
-                    evenCell.className += " current_period";
+                    evenCell.classList.add("current_period");
             }
         } else if (item.period % 2 == 1) {
             oddCell.appendChild(textCell);
             if (dayType == "odd") {
-                oddCell.className = "current_day_type";
+                oddCell.classList.add("current_day_type");
                 if (displaying_now)
-                    oddCell.className += " current_period";
+                    oddCell.classList.add("current_period");
             }
         } else {
             evenCell.appendChild(textCell);
             if (dayType == "even") {
-                evenCell.className = "current_day_type";
+                evenCell.classList.add("current_day_type");
                 if (displaying_now)
-                    evenCell.className += " current_period";
+                    evenCell.classList.add("current_period");
             }
         }
     }

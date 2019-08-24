@@ -96,11 +96,21 @@ details {
     text-align: right;
 }
 
-@media (min-width: 568px) {
+@media (min-width: 370px) and (orientation: landscape) {
     .start_time:after {
         content: "- ";
     }
 }
+
+@media (orientation: portrait) {
+    .end_time {
+        display: block;
+    }
+    td.time_cell {
+        text-align: right;
+    }
+}
+
 h1 {
     text-align: center;
     color:  #006e1c;
